@@ -3,6 +3,10 @@
 #include <utility>
 #include <tuple>
 
+#ifdef __GNUC__
+    #include <experimental/tuple>
+#endif // __GNUC__
+
 #include "../iteration/static_for.hpp"
 
 namespace mp {
@@ -103,13 +107,13 @@ namespace mp {
     using contains = typename impl::contains<T, Tuple>::type;
 
     template<typename T, typename Tuple>
-    constexpr size_t index_of(Tuple) {
+    constexpr size_t index_of() {
         static_assert(contains<T, Tuple>{}, "invalid type");
         return impl::index_of<T, Tuple>::value;
     }
 
     template<typename Tuple>
-    constexpr size_t size_of(Tuple) {
+    constexpr size_t size_of() {
         return impl::size_of<Tuple>::value;
     }
 
@@ -121,7 +125,11 @@ namespace mp {
             for_args(f, FWD(xs)...);
         };
 
-        std::apply(adapted, FWD(t));
+        #ifdef __GNUC__
+            std::experimental::apply(adapted, FWD(t));
+        #else
+            std::apply(adapted, FWD(t));
+        #endif // __GNUC__
     }
 
 }
