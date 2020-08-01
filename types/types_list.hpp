@@ -95,10 +95,39 @@ namespace mp {
         >
         struct rename<Container, List<Elements...>> { using type = Container<Elements...>; };
 
+
+        //generate a tuple of N Ts
+        template<typename T, size_t N, typename... Ts>
+        struct generate_tuple
+        {
+            using type = typename generate_tuple<T, N-1, T, Ts...>::type; 
+        };
+
+        template<typename T, typename... Ts>
+        struct generate_tuple<T, 0, Ts...>
+        {
+            using type = std::tuple<Ts...>;
+        };
+
+        //tuple_from_func_args
+        template<typename F, typename... Args>
+        struct extract_func_args;
+
+        template<typename F, typename... Args>
+        struct extract_func_args<F(Args...)>
+        {
+            using tuple = std::tuple<Args...>;
+        };
     }
 
     template<typename... Ts>
     using type_list = impl::type_list<Ts...>;
+    
+    template<typename T, size_t N>
+    using generate_tuple = typename impl::generate_tuple<T, N>::type;
+
+    template<typename T>
+    using extract_func_args = typename impl::extract_func_args<T>::tuple;
 
     template<template<class...> class Container, class List>
     using rename = typename impl::rename<Container, List>::type;
@@ -108,7 +137,6 @@ namespace mp {
 
     template<typename T, typename Tuple>
     constexpr size_t index_of() {
-        static_assert(contains<T, Tuple>{}, "invalid type");
         return impl::index_of<T, Tuple>::value;
     }
 
