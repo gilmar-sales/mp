@@ -3,9 +3,9 @@
 #include <utility>
 #include <tuple>
 
-#ifdef __GNUC__
+#ifdef __linux__
     #include <experimental/tuple>
-#endif // __GNUC__
+#endif // __linux__
 
 #include "../iteration/static_for.hpp"
 
@@ -153,11 +153,11 @@ namespace mp {
             for_args(f, FWD(xs)...);
         };
 
-        #ifdef __GNUC__
+        #ifdef __linux__
             std::experimental::apply(adapted, FWD(t));
         #else
             std::apply(adapted, FWD(t));
-        #endif // __GNUC__
+        #endif // __linux__
     }
 
 }
