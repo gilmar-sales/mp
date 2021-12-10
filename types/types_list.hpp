@@ -3,7 +3,7 @@
 #include <utility>
 #include <tuple>
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__MINGW32__)
     #include <experimental/tuple>
 #endif // __linux__
 
@@ -153,7 +153,7 @@ namespace mp {
             for_args(f, FWD(xs)...);
         };
 
-        #ifdef __linux__
+        #if defined(__linux__) || defined(__MINGW32__)
             std::experimental::apply(adapted, FWD(t));
         #else
             std::apply(adapted, FWD(t));
